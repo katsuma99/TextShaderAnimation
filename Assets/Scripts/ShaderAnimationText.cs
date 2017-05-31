@@ -23,9 +23,7 @@ public class ShaderAnimationText : MonoBehaviour
     public void InitShader()
     {
         mMaterial.SetColor("_Color", mText.color);
-        mMaterial.SetFloat("_Val", 1);
-        mMaterial.SetFloat("_Hue", 1);
-        mMaterial.SetFloat("_NormalTime", 1);
+        mMaterial.SetFloat("_NormalTime", 0);
         mMaterial.SetInt("_TextCount", mText.text.Length);
     }
 
@@ -49,7 +47,7 @@ public class ShaderAnimationText : MonoBehaviour
 
         iTween.ValueTo(this.gameObject, iTween.Hash(
             "delay", 0.001,
-            "from", Random.Range(200, 300),
+            "from", 1.0f,
             "to", 0,
             "time", cAnimTime,
             "easeType", iTween.EaseType.easeInOutCubic,
@@ -58,10 +56,8 @@ public class ShaderAnimationText : MonoBehaviour
         );
     }
 
-    void OnUpdateShader(int hueTrans)
+    void OnUpdateShader(float normalizationTime)
     {
-        float normalizationTime = Mathf.InverseLerp(mAnimStartTime, mAnimStartTime + cAnimTime, Time.time); //0->1
-        mMaterial.SetFloat("_NormalTime", normalizationTime);
-        mMaterial.SetFloat("_Hue", hueTrans);//200~300->0
+        mMaterial.SetFloat("_NormalTime", normalizationTime);//1->0
     }
 }
