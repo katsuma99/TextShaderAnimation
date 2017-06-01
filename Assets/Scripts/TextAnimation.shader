@@ -60,61 +60,10 @@
 		half2 texcoord  : TEXCOORD0;
 	};
 
-
-
 	fixed4 _Color;
 	half _Hue, _Sat, _Val;
 	int _TextCount;
 	float _NormalTime;
-
-	float4 Rotate(float4 pos,uint vertexId) {
-		float Deg2Rad = 0.0174532924;
-		//bool sign = fmod(random, 0.1) > 0.05;
-		int id = vertexId % 8;
-		float extraTime = _NormalTime;
-		//最大角度(場所によって変える)
-		float power = extraTime * -50;
-		if (id == 0 || id == 1)
-			power *= 0.3 + abs(_CosTime.z) * 0.8;
-		else if (id == 2 || id == 3)
-			power *= 0.2 + abs(_CosTime.z) * 0.1;
-		else if (id == 6 || id == 7)
-			power *= 0.3 + abs(_SinTime.w) * 0.2;
-		float rad = power * Deg2Rad;
-
-		//回転左右反転
-		//if (_TextCount % 2 == 1)
-		//	rad *= -1;
-
-		//角度算出
-		float4 newPos = pos;
-		newPos.x = pos.x * cos(rad) - pos.y * sin(rad);
-		newPos.y = pos.x * sin(rad) + pos.y * cos(rad);
-		return newPos;
-	}
-
-	float4 Scale(float4 pos,uint vertexId) {
-		float power = pow(_NormalTime, 2) * (abs(_CosTime.w) * 15);
-		uint geoId = asuint(vertexId / 4.0);//vertexId / 4; int割りできない 
-		if (geoId % 2 == 1)
-			power *= 0.4;
-
-		float transX = power;
-		float transY = power;
-		if (vertexId % 4 == 0 || vertexId % 4 == 3)
-		{
-			transX *= -1;
-		}
-		if (vertexId % 4 == 2 || vertexId % 4 == 3)
-		{
-			transY *= -1;
-		}
-
-		float4 newPos = pos;
-		newPos.x += transX;
-		newPos.y += transY;
-		return newPos;
-	}
 
 	float4 TransportInterval(float4 pos, uint vertexId) {
 
@@ -140,18 +89,36 @@
 	v2f vert(appdata_t IN)
 	{
 		v2f OUT;
-		float4 pos = IN.vertex;// = Rotate(IN.vertex, IN.vertexId);
-							   //pos = Scale(pos, IN.vertexId);
+		float4 pos = IN.vertex;
 		pos = TransportInterval(pos, IN.vertexId);
 
 		OUT.pos = UnityObjectToClipPos(pos);
 		OUT.texcoord = IN.texcoord;
 		OUT.color = _Color;
-		//#ifdef PIXELSNAP_ON
-		//			OUT.pos = UnityPixelSnap(OUT.pos);
-		//#endif
-
 		return OUT;
+	}
+
+	float4 Rotate(float4 pos, uint vertexId) {
+
+		//画面の中心から回転する(変形しているみたいになる)GeometryShaderじゃないとポリゴンの中心わからない
+		float Deg2Rad = 0.0174532924;
+		int id = vertexId % 8;
+
+		//最大角度(場所によって変える)
+		float power = _NormalTime * 50;
+		if (id == 0 || id == 1)
+			power *= 0.3 + abs(_CosTime.z) * 0.8;
+		else if (id == 2 || id == 3)
+			power *= 0.2 + abs(_CosTime.z) * 0.1;
+		else if (id == 6 || id == 7)
+			power *= 0.3 + abs(_SinTime.w) * 0.2;
+		float rad = power * Deg2Rad;
+
+		//角度算出
+		float4 newPos = pos;
+		newPos.x = pos.x * cos(rad) - pos.y * sin(rad);
+		newPos.y = pos.x * sin(rad) + pos.y * cos(rad);
+		return newPos;
 	}
 
 	[maxvertexcount(3)]
