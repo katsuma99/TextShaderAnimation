@@ -9,14 +9,19 @@ public class ShaderAnimationText : MonoBehaviour
     Text mText;
     float mAnimStartTime;
     float mNextAnimStartTime;
-    public const float cAnimTime = 0.6f;
+
+    [SerializeField, Range(0, 5)]
+    public float cAnimTime = 0.6f;
+
+    [SerializeField, Range(0, 5)]
+    public float cAnimInterval = 1f;
 
     // Use this for initialization
     void Awake()
     {
         mText = transform.GetComponent<Text>();
         mMaterial = mText.material;
-        mNextAnimStartTime = Time.time + Random.Range(1f, 3f);
+        mNextAnimStartTime = Time.time + cAnimInterval;
         InitShader();
     }
 
@@ -27,12 +32,17 @@ public class ShaderAnimationText : MonoBehaviour
         mMaterial.SetInt("_TextCount", mText.text.Length);
     }
 
+    void OnDisable()
+    {
+        mMaterial.SetFloat("_NormalTime", 0);
+    }
+
     public void Update()
     {
         if (Time.time > mNextAnimStartTime)
         {
             Animation();
-            mNextAnimStartTime = Time.time + Random.Range(0.4f, 1.2f);
+            mNextAnimStartTime = Time.time + cAnimInterval;
         }
     }
 
