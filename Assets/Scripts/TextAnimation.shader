@@ -2,7 +2,7 @@
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
-		_Color("Color", Color) = (1,1,1,1)
+	_Color("Color", Color) = (1,1,1,1)
 		_Hue("Hue", Float) = 0
 		_Sat("Saturation", Float) = 1
 		_Val("Value", Float) = 1
@@ -256,7 +256,7 @@
 	c.rgb = IN.color;
 	c.rgb *= c.a;
 	float pos = (IN.texcoord.x - 0.5) * 2; //-1^1
-	half3 shift = half3(_Hue * _NormalTime * pos + pos * 100, _Sat, _Val); //HSV色空間
+	half3 shift = half3(_Hue * pos + pos * 100, _Sat, _Val); //HSV色空間
 
 	return fixed4(shift_col(c, shift), c.a);
 	}
