@@ -65,7 +65,7 @@
 	fixed4 _Color;
 	half _Hue, _Sat, _Val;
 	int _TextCount;
-	float random, _NormalTime;
+	float _NormalTime;
 
 	float4 Rotate(float4 pos,uint vertexId) {
 		float Deg2Rad = 0.0174532924;
