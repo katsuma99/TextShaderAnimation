@@ -94,8 +94,7 @@
 	}
 
 	float4 Scale(float4 pos,uint vertexId) {
-		float extraTime = _NormalTime;
-		float power = extraTime * extraTime * (20 + abs(_CosTime.w) * 15);
+		float power = pow(_NormalTime, 2) * (abs(_CosTime.w) * 15);
 		uint geoId = asuint(vertexId / 4.0);//vertexId / 4; int割りできない 
 		if (geoId % 2 == 1)
 			power *= 0.4;
@@ -119,29 +118,19 @@
 
 	float4 TransportInterval(float4 pos, uint vertexId) {
 
-		float extraTime = _NormalTime;
-		float4 newPos = pos;
-		uint geometoryId = vertexId / 4;
-		uint textId = ((_TextCount - 1) - geometoryId);
-		newPos.x -= textId * 10 * extraTime;
+		uint geometoryId = vertexId / 4; //ポリゴン番号（Textは左からポリゴンが作られる）
+		uint textId = ((_TextCount - 1) - geometoryId); //右からのポリゴン番号:idは0から
+		pos.x -= textId * 10 * _NormalTime; //左に行くほどXが離れる
 
+		//番号によってY方向にアクセントつける
 		if (textId % 4 == 1)
-			newPos.y += 30 * _CosTime.w * extraTime;
+			pos.y += 30 * _CosTime.w * _NormalTime;
 		else if (textId % 4 == 2)
-			newPos.y -= 8 * _CosTime.z * extraTime;
+			pos.y -= 8 * _CosTime.z * _NormalTime;
 		else if (textId % 4 == 3)
-			newPos.y += 20 * _SinTime.z * extraTime;
-		return newPos;
+			pos.y += 20 * _SinTime.z * _NormalTime;
+		return pos;
 	}
-
-	//half2 ScaleTex(half2 tex) {
-
-	//	half2 newTex;
-	//	newTex = tex;
-	//	float power = _Hue *0.01*abs(_SinTime.w);
-	//	newTex *= 1 - 0.1 *power;
-	//		return newTex;
-	//}
 
 	float4 CalculateCenter(float s, float t, float4 pos1, float4 pos2, float4 pos3) {
 		float4 pos = pos1 + (pos2 - pos1) * s + (pos3 - pos1) * t; // ３点の中間位置を求める
@@ -151,7 +140,6 @@
 	v2f vert(appdata_t IN)
 	{
 		v2f OUT;
-		random = frac(sin(dot(IN.texcoord.xy + IN.vertex.xy, float2(12.9898, 78.233))) * 43758.5453); //テクスチャのピクセル位置でランダム(0~1)
 		float4 pos = IN.vertex;// = Rotate(IN.vertex, IN.vertexId);
 							   //pos = Scale(pos, IN.vertexId);
 		pos = TransportInterval(pos, IN.vertexId);
