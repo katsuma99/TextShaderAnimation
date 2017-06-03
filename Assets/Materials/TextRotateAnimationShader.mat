@@ -72,7 +72,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _TextCount: 9
+    - _TextCount: 17
     - _UVSec: 0
     - _Val: 1
     - _ZWrite: 1

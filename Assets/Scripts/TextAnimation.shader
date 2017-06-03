@@ -25,7 +25,7 @@
 #pragma vertex vert
 #pragma geometry geo
 #pragma fragment frag
-#pragma multi_compile DUMMY PIXELSNAP_ON
+#pragma multi_compile PIXELSNAP_ON
 #include "UnityCG.cginc"
 
 		struct appdata_t
@@ -71,21 +71,19 @@
 		return pos;
 	}
 
-	float4 CalculateCenter(float s, float t, float4 pos1, float4 pos2, float4 pos3) {
-		float4 pos = pos1 + (pos2 - pos1) * s + (pos3 - pos1) * t; // ３点の中間位置を求める
-		return pos;
-	}
-
 	v2f vert(appdata_t IN)
 	{
 		v2f OUT;
-		float4 pos = IN.vertex;
-		pos = TransportInterval(pos, IN.vertexId);
-
+		float4 pos = TransportInterval(IN.vertex, IN.vertexId);
 		OUT.pos = UnityObjectToClipPos(pos);
 		OUT.texcoord = IN.texcoord;
 		OUT.color = _Color;
 		return OUT;
+	}
+
+	float4 CalculateCenter(float s, float t, float4 pos1, float4 pos2, float4 pos3) {
+		float4 pos = pos1 + (pos2 - pos1) * s + (pos3 - pos1) * t; // ３点の中間位置を求める
+		return pos;
 	}
 
 	float4 Rotate(float4 pos, uint vertexId) {
@@ -201,11 +199,12 @@
 	c.rgb = IN.color;
 	c.rgb *= c.a;
 	float pos = (IN.texcoord.x - 0.5) * 2; //-1^1
-	half3 shift = half3(_Hue * pos + pos * 100, _Sat, _Val); //HSV色空間
+	half3 shift = half3(_Hue * (_NormalTime + 1) * pos + pos * 100, _Sat, _Val); //HSV色空間
 
 	return fixed4(shift_col(c, shift), c.a);
 	}
 		ENDCG
 	}
 	}
+	Fallback "Custom/TextColorAnimation"
 }

@@ -13,20 +13,10 @@
 
 		SubShader
 	{
-		Tags
-	{
-		"Queue" = "Transparent"
-		"IgnoreProjector" = "True"
-		"RenderType" = "Transparent"
-		"PreviewType" = "Plane"
-		"CanUseSpriteAtlas" = "True"
-	}
 
-		Cull Off
+		Cull Back
 		Lighting Off
-		ZWrite Off
-		Fog{ Mode Off }
-		Blend One OneMinusSrcAlpha
+		AlphaToMask On
 
 		Pass
 	{
@@ -58,8 +48,7 @@
 	v2f vert(appdata_t IN)
 	{
 		v2f OUT;
-		float4 pos = IN.vertex;
-		OUT.pos = UnityObjectToClipPos(pos);
+		OUT.pos = UnityObjectToClipPos(IN.vertex);
 		OUT.texcoord = IN.texcoord;
 		OUT.color = _Color;
 		return OUT;

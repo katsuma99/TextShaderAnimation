@@ -72,10 +72,10 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _TextCount: 9
+    - _TextCount: 25
     - _UVSec: 0
     - _Val: 1
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 0.47586206, b: 0, a: 1}
+    - _Color: {r: 0, g: 0.53200006, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

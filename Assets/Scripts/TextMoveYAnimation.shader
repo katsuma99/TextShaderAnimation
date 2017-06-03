@@ -1,4 +1,4 @@
-﻿Shader "Custom/TextMoveAnimation" {
+﻿Shader "Custom/TextMoveYAnimation" {
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
@@ -48,11 +48,17 @@
 
 	float4 TransportInterval(float4 pos, uint vertexId) {
 
+		float4 newPos = pos;
 		uint geometoryId = vertexId / 4;
 		uint textId = ((_TextCount - 1) - geometoryId);
-		pos.x -= textId * 10 * _NormalTime;
 
-		return pos;
+		if (textId % 4 == 1)
+			newPos.y += 30 * _CosTime.w * _NormalTime;
+		else if (textId % 4 == 2)
+			newPos.y -= 8 * _CosTime.z * _NormalTime;
+		else if (textId % 4 == 3)
+			newPos.y += 20 * _SinTime.z * _NormalTime;
+		return newPos;
 	}
 
 	v2f vert(appdata_t IN)

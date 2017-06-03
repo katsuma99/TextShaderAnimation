@@ -1,4 +1,4 @@
-﻿Shader "Custom/TextRotateAnimation" {
+﻿Shader "Custom/TextTransformAnimation(Legacy)" {
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
@@ -13,6 +13,7 @@
 
 		SubShader
 	{
+
 		Cull Back
 		Lighting Off
 		AlphaToMask On
@@ -20,11 +21,10 @@
 		Pass
 	{
 		CGPROGRAM
-#pragma target 4.0
+#pragma target 3.5
 #pragma vertex vert
-#pragma geometry geo
 #pragma fragment frag
-#pragma multi_compile PIXELSNAP_ON
+#pragma multi_compile DUMMY PIXELSNAP_ON
 #include "UnityCG.cginc"
 
 		struct appdata_t
@@ -33,13 +33,6 @@
 		float4 color    : COLOR;
 		float2 texcoord : TEXCOORD0;
 		uint vertexId : SV_VertexID;
-	};
-
-	struct geomIn
-	{
-		float4 pos   : SV_POSITION;
-		fixed4 color : COLOR;
-		half2 texcoord  : TEXCOORD0;
 	};
 
 	struct v2f
@@ -54,21 +47,7 @@
 	int _TextCount;
 	float _NormalTime;
 
-	v2f vert(appdata_t IN)
-	{
-		v2f OUT;
-		OUT.pos = UnityObjectToClipPos(IN.vertex);
-		OUT.texcoord = IN.texcoord;
-		OUT.color = _Color;
-		return OUT;
-	}
-
-	float4 CalculateCenter(float s, float t, float4 pos1, float4 pos2, float4 pos3) {
-		float4 pos = pos1 + (pos2 - pos1) * s + (pos3 - pos1) * t; // ３点の中間位置を求める
-		return pos;
-	}
-
-	float4 Rotate(float4 pos, uint vertexId) {
+	float4 Rotate(float4 pos,uint vertexId) {
 
 		//画面の中心から回転する(変形しているみたいになる)GeometryShaderじゃないとポリゴンの中心わからない
 		float Deg2Rad = 0.0174532924;
@@ -91,34 +70,18 @@
 		return newPos;
 	}
 
-	[maxvertexcount(3)]
-	void geo(triangle geomIn In[3], uint primitiveId : SV_PrimitiveID, inout TriangleStream<v2f> TriStream) {
+	v2f vert(appdata_t IN)
+	{
+		v2f OUT;
+		float4 pos = Rotate(IN.vertex, IN.vertexId);
+		OUT.pos = UnityObjectToClipPos(pos);
+		OUT.texcoord = IN.texcoord;
+		OUT.color = _Color;
 
-		//回転
-		float4 center = (In[0].pos - In[2].pos) * 0.5 + In[2].pos;
-
-		In[0].pos -= center;
-		In[1].pos -= center;
-		In[2].pos -= center;
-
-		In[0].pos = Rotate(In[0].pos, primitiveId);
-		In[1].pos = Rotate(In[1].pos, primitiveId);
-		In[2].pos = Rotate(In[2].pos, primitiveId);
-
-		In[0].pos += center;
-		In[1].pos += center;
-		In[2].pos += center;
-
-		TriStream.Append(In[0]);
-		TriStream.Append(In[1]);
-		TriStream.Append(In[2]);
-
-		// 連続したトライアングルを終了
-		TriStream.RestartStrip();
+		return OUT;
 	}
 
 	sampler2D _MainTex;
-
 	fixed4 frag(v2f IN) : SV_Target
 	{
 		fixed4 c = tex2D(_MainTex, IN.texcoord);
@@ -129,5 +92,5 @@
 		ENDCG
 	}
 	}
-		Fallback "Custom/TextColorAnimation"
+	Fallback "Custom/TextMoveAnimation(Legacy)"
 }

@@ -7,7 +7,6 @@ public class ShaderAnimationText : MonoBehaviour
 {
     Material mMaterial;
     Text mText;
-    float mAnimStartTime;
     float mNextAnimStartTime;
 
     [SerializeField, Range(0, 5)]
@@ -52,8 +51,6 @@ public class ShaderAnimationText : MonoBehaviour
         {
             Destroy(transform.GetComponent<iTween>());
         }
-
-        mAnimStartTime = mNextAnimStartTime;
 
         iTween.ValueTo(this.gameObject, iTween.Hash(
             "delay", 0.001,
