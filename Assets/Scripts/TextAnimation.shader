@@ -2,7 +2,7 @@
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
-	_Color("Color", Color) = (1,1,1,1)
+		_Color("Color", Color) = (1,1,1,1)
 		_Hue("Hue", Float) = 0
 		_Sat("Saturation", Float) = 1
 		_Val("Value", Float) = 1
@@ -13,20 +13,10 @@
 
 		SubShader
 	{
-		Tags
-	{
-		"Queue" = "Transparent"
-		"IgnoreProjector" = "True"
-		"RenderType" = "Transparent"
-		"PreviewType" = "Plane"
-		"CanUseSpriteAtlas" = "True"
-	}
 
-		Cull Off
+		Cull Back
 		Lighting Off
-		ZWrite Off
-		Fog{ Mode Off }
-		Blend One OneMinusSrcAlpha
+		AlphaToMask On
 
 		Pass
 	{
