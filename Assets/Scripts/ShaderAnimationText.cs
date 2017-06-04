@@ -28,7 +28,7 @@ public class ShaderAnimationText : MonoBehaviour
     {
         mMaterial.SetColor("_Color", mText.color);
         mMaterial.SetFloat("_NormalTime", 0);
-        mMaterial.SetInt("_TextCount", mText.text.Length);
+        mMaterial.SetInt("TextCount", mText.text.Length);
     }
 
     void OnDisable()

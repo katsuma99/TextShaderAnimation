@@ -3,8 +3,9 @@
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 	_Color("Color", Color) = (1,1,1,1)
+		_Power("Power", Float) = 1
 		_NormalTime("NormalizationTime", Float) = 0
-		_TextCount("_TextCount", Int) = 1
+		_TextCount("TextCount", Int) = 1
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 1
 	}
 
@@ -47,6 +48,7 @@
 	};
 
 	fixed4 _Color;
+	float _Power;
 	int _TextCount;
 	float _NormalTime;
 
@@ -71,14 +73,14 @@
 		int id = vertexId % 8;
 
 		//最大角度(場所によって変える)
-		float power = _NormalTime * 50;
+		float rotate = _NormalTime * _Power * 50;
 		if (id == 0 || id == 1)
-			power *= 0.3 + abs(_CosTime.z) * 0.8;
+			rotate *= 0.3 + abs(_CosTime.z) * 0.8;
 		else if (id == 2 || id == 3)
-			power *= 0.2 + abs(_CosTime.z) * 0.1;
+			rotate *= 0.2 + abs(_CosTime.z) * 0.1;
 		else if (id == 6 || id == 7)
-			power *= 0.3 + abs(_SinTime.w) * 0.2;
-		float rad = power * Deg2Rad;
+			rotate *= 0.3 + abs(_SinTime.w) * 0.2;
+		float rad = rotate * Deg2Rad;
 
 		//角度算出
 		float4 newPos = pos;
@@ -125,5 +127,5 @@
 		ENDCG
 	}
 	}
-		Fallback "Custom/TextColorAnimation"
+	Fallback "Custom/TextMoveAnimation(Legacy)"
 }

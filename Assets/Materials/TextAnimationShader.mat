@@ -63,11 +63,13 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Hue: 300
+    - _InitVarColor: 100
     - _Metallic: 0
     - _Mode: 0
     - _NormalTime: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _Power: 1.5
     - _Sat: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

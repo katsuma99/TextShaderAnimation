@@ -3,8 +3,8 @@
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Color", Color) = (1,1,1,1)
-		_NormalTime("NormalizationTime", Float) = 0
-		_TextCount("_TextCount", Int) = 1
+			_NormalTime("NormalizationTime", Float) = 0
+		_TextCount("TextCount", Int) = 1
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 1
 	}
 
@@ -68,4 +68,5 @@
 		ENDCG
 	}
 	}
+	Fallback "GUI/Text Shader"
 }

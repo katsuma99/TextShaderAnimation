@@ -2,12 +2,10 @@
 	Properties
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
-		_Color("Color", Color) = (1,1,1,1)
-		_Hue("Hue", Float) = 0
-		_Sat("Saturation", Float) = 1
-		_Val("Value", Float) = 1
+	_Color("Color", Color) = (1,1,1,1)
+		_Power("Power", Float) = 1.5
 		_NormalTime("NormalizationTime", Float) = 0
-		_TextCount("_TextCount", Int) = 1
+		_TextCount("TextCount", Int) = 1
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 1
 	}
 
@@ -41,7 +39,7 @@
 	};
 
 	fixed4 _Color;
-	half _Hue, _Sat, _Val;
+	float _Power;
 	int _TextCount;
 	float _NormalTime;
 
@@ -79,11 +77,12 @@
 	fixed4 frag(v2f IN) : SV_Target
 	{
 		fixed4 c = tex2D(_MainTex, IN.texcoord);
-		c.rgb = IN.color;
-		c.rgb *= c.a;
-		float pos = (IN.texcoord.x - 0.5) * 2; //-1^1
-		half3 shift = half3(_Hue * _NormalTime * pos + pos * 100, _Sat, _Val); //HSV色空間
-		return fixed4(shift_col(c, shift), c.a);
+	c.rgb = IN.color;
+	c.rgb *= c.a;
+	float pos = (IN.texcoord.x - 0.5) * 2; //-1^1
+	half shiftHue = _Power * 200;
+	half3 shift = half3(shiftHue * _NormalTime * pos + pos * 100, 1, 1); //HSV色空間
+	return fixed4(shift_col(c, shift), c.a);
 	}
 		ENDCG
 	}

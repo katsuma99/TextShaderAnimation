@@ -3,8 +3,9 @@
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Color", Color) = (1,1,1,1)
-		_NormalTime("NormalizationTime", Float) = 0
-		_TextCount("_TextCount", Int) = 1
+			_Power("Power", Float) = 1
+			_NormalTime("NormalizationTime", Float) = 0
+		_TextCount("TextCount", Int) = 1
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 1
 	}
 
@@ -39,6 +40,7 @@
 	};
 
 	fixed4 _Color;
+	float _Power;
 	int _TextCount;
 	float _NormalTime;
 
@@ -46,7 +48,7 @@
 
 		uint geometoryId = vertexId / 4;
 		uint textId = ((_TextCount - 1) - geometoryId);
-		pos.x -= textId * 10 * _NormalTime;
+		pos.x -= textId * 10 * _Power * _NormalTime;
 
 		return pos;
 	}

@@ -3,8 +3,9 @@
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 	_Color("Color", Color) = (1,1,1,1)
+		_Power("Power", Float) = 2
 		_NormalTime("NormalizationTime", Float) = 0
-		_TextCount("_TextCount", Int) = 1
+		_TextCount("TextCount", Int) = 1
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 1
 	}
 
@@ -48,6 +49,7 @@
 		};
 
 		fixed4 _Color;
+		float _Power;
 		int _TextCount;
 		float _NormalTime;
 
@@ -71,7 +73,7 @@
 			//歪み
 			float4 center = CalculateCenter(0.5, 0.5, In[0].pos, In[1].pos, In[2].pos);//センター変更:頂点シェーダから、ポリゴンに必要な頂点を求める
 
-			float power = _NormalTime * 2.0;
+			float power = _NormalTime * _Power;
 			if (primitiveId % 5 == 1)
 				power *= 0.7 + abs(_CosTime.w) * 0.4;
 			else if (primitiveId % 5 == 2)

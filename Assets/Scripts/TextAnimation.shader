@@ -3,11 +3,10 @@
 	{
 		[PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
 		_Color("Color", Color) = (1,1,1,1)
-		_Hue("Hue", Float) = 0
-		_Sat("Saturation", Float) = 1
-		_Val("Value", Float) = 1
-		_NormalTime("NormalizationTime", Float) = 0
-		_TextCount("_TextCount", Int) = 1
+			_Power("Power", Float) = 1.5
+			_InitVarColor("InitVarColor",Int) = 100
+			_NormalTime("NormalizationTime", Float) = 0
+		_TextCount("TextCount", Int) = 1
 		[MaterialToggle] PixelSnap("Pixel snap", Float) = 1
 	}
 
@@ -51,7 +50,8 @@
 	};
 
 	fixed4 _Color;
-	half _Hue, _Sat, _Val;
+	float _Power;
+	int _InitVarColor;
 	int _TextCount;
 	float _NormalTime;
 
@@ -93,14 +93,14 @@
 		int id = vertexId % 8;
 
 		//最大角度(場所によって変える)
-		float power = _NormalTime * 50;
+		float rotate = _NormalTime * _Power * 50;
 		if (id == 0 || id == 1)
-			power *= 0.3 + abs(_CosTime.z) * 0.8;
+			rotate *= 0.3 + abs(_CosTime.z) * 0.8;
 		else if (id == 2 || id == 3)
-			power *= 0.2 + abs(_CosTime.z) * 0.1;
+			rotate *= 0.2 + abs(_CosTime.z) * 0.1;
 		else if (id == 6 || id == 7)
-			power *= 0.3 + abs(_SinTime.w) * 0.2;
-		float rad = power * Deg2Rad;
+			rotate *= 0.3 + abs(_SinTime.w) * 0.2;
+		float rad = rotate * Deg2Rad;
 
 		//角度算出
 		float4 newPos = pos;
@@ -118,7 +118,7 @@
 
 		//拡大
 		center = (In[0].pos - In[2].pos) * 0.5 + In[2].pos;//センター変更
-		power = extraTime * 1.5;
+		power = extraTime * _Power;
 		int id = primitiveId % 10;
 		if (id == 2 || id == 3)
 			power *= 0.1 + abs(_CosTime.w) * 0.3;
@@ -199,7 +199,8 @@
 	c.rgb = IN.color;
 	c.rgb *= c.a;
 	float pos = (IN.texcoord.x - 0.5) * 2; //-1^1
-	half3 shift = half3(_Hue * (_NormalTime + 1) * pos + pos * 100, _Sat, _Val); //HSV色空間
+	half shiftHue = _Power * 200;
+	half3 shift = half3(shiftHue * (_NormalTime + 1) * pos + pos * _InitVarColor, 1, 1); //HSV色空間
 
 	return fixed4(shift_col(c, shift), c.a);
 	}
